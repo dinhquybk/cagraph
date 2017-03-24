@@ -34,7 +34,7 @@ Knoxville, TN 37996-3450
      865-974-4397
 Fax: 865-974-4404
  */
-#ifndef	_JVAL_H_
+#ifndef	_JVAL_H_// Tranh bi chen 2 lan mot file .h vao mot chuong trinh
 #define	_JVAL_H_
 
 /* The Jval -- a type that can hold any 8-byte type */

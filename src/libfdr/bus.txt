@@ -1,0 +1,11 @@
+[STATIONS]
+S1=DBHKN
+S2=Cong vien Thong Nhat
+S3=Ho Hoan Kiem
+S4=Thai Ha
+S5=Chua Boc
+S6=BX My Dinh
+[LINES]
+M1=S6 S5 S3
+M2=S1 S2 S3 S4 S5 S6
+M3=S4 S6 S5 S1 S2
