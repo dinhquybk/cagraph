@@ -1,5 +1,6 @@
+#include <stdio.h>
 #include "ex8.h"
-int Connected(JRB g,int a,int b){
+int Connected(JRB g,int a,int b){// kiểm tra xem có cạnh từ a đến b không
 	JRB tree=NULL,ptr=NULL;
 	ptr=jrb_find_int(g,a);
 	if(ptr){		
@@ -11,12 +12,12 @@ int Connected(JRB g,int a,int b){
 	}
 	else return 0;
 }
-JRB GetAdjacentList(JRB g,int a){
+JRB GetAdjacentList(JRB g,int a){// trả về danh sách các đỉnh mà từ a có thể đến được
 	JRB ptr=jrb_find_int(g,a);
 	if(ptr) return (JRB)jval_v(ptr->val);
 	else return NULL;	
 }
-int InDegree(JRB g,int a){
+int InDegree(JRB g,int a){// tính bậc vào của một đỉnh
 	int count=0;
 	JRB ptr=NULL,subptr=NULL,subtree=NULL;
 
@@ -29,7 +30,7 @@ int InDegree(JRB g,int a){
 	}
 	return count;
 }
-int OutDegree(JRB g,int a){
+int OutDegree(JRB g,int a){// tính bậc ra của một đỉnh
 	int count=0;
 	JRB ptr=NULL,subptr=NULL,subtree=NULL;
 	

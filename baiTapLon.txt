@@ -8,3 +8,5 @@ phải tạo make file để đảm bảo có thể build đc trên máy của t
 viết báo cáo xem dùng những công cụ gì.
 Chạy chương trình demo các chức năng, báo cáo kết quả đo hiệu năng(xem thời gian phụ thuộc như nào vào kích thước dữ liệu).
 có phải in báo cáo.
+bảo vệ là thuyết trình, chuẩn bị nội dung trình bày slide là tiện nhất 
+Bai test : su dung dc jrb, jval, dllist, cac thao tac tim chen xoa vv biet lam la dc

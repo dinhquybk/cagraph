@@ -1,6 +1,6 @@
 #include "ex5.h"
 #include <stdlib.h>
-#include "fieldsh"
+#include "fields.h"
 Dllist SearchN(const char* fname, int x){
 	Dllist list; int n,i,index=0; IS is;
 	list=new_dllist();	
