@@ -13,11 +13,10 @@ JRB Load(const char* filename);
 void FreeGraph(JRB g);
 //trả về danh sách đỉnh của g
 Dllist GetVertices(JRB g);
-JRB GetVerticesJrb(JRB g);
 //kiểm tra nếu có cạnh từ u->v
 int Connected(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval));
 //trả về trọng số cạnh u->v
-Jval GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval));
+double GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval));
 //lấy danh sách đỉnh kề với đỉnh u
 // Adjacent(u)={v| có đường đi từ u->v}
 Dllist GetAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval));

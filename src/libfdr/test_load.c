@@ -60,6 +60,49 @@ int main(int argc, char const *argv[])
 		dll_free(ds_reverse);		
 		dll_free(ds_sort);
 		dll_free(ds_dinh);
+		// test gra_connected:
+		fprintf(f, "test gra_connected\n" );
+		jrb_traverse(ptr,g){
+			jrb_traverse(subptr,g){
+				fprintf(f, "%d",Connected(g,ptr->key,subptr->key,jval_cmp_i) );
+			}
+			fprintf(f, "\n" );
+		}
+		// test gra_getweight:
+		fprintf(f, "test gra_getweight\n" );
+		jrb_traverse(ptr,g){
+			jrb_traverse(subptr,g){
+				fprintf(f, "%0.0f ",GetWeight(g,ptr->key,subptr->key,jval_cmp_i) );
+			}
+			fprintf(f, "\n" );
+		}
+		// test gra_getadjacents:
+		Dllist adjacents_list;
+		fprintf(f, "test gra_getadjacents\n" );
+		jrb_traverse(ptr,g){
+			fprintf(f, "%d: ",jval_i(ptr->key) );
+			adjacents_list=GetAdjacents(g,ptr->key,jval_cmp_i);
+			dll_display(adjacents_list,show_dll_node);
+			fprintf(f, "\n" );
+			dll_free(adjacents_list);
+		}
+		// test gra_backgetadjacents:
+		Dllist badjacents_list;
+		fprintf(f, "test gra_backgetadjacents\n" );
+		jrb_traverse(ptr,g){
+			fprintf(f, "%d: ",jval_i(ptr->key) );
+			badjacents_list=GetBackAdjacents(g,ptr->key,jval_cmp_i);
+			dll_display(badjacents_list,show_dll_node);
+			fprintf(f, "\n" );
+			dll_free(badjacents_list);
+		}
+		// test gra_inoutdegree:		
+		fprintf(f, "test gra_inoutdegree\n" );
+		jrb_traverse(ptr,g){
+			fprintf(f, "%d: in(%d) out(%d)\n",
+				jval_i(ptr->key),GetIndegree(g,ptr->key,jval_cmp_i),GetOutDegree(g,ptr->key,jval_cmp_i) );			
+		}
+		
 		fclose(f);
 
 		printf("Test case : %d\n",i+1 );

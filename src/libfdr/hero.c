@@ -251,38 +251,32 @@ JRB gra_getadjacents_gen(JRB g,Jval u,int (*func)(Jval,Jval)){// trả về danh
 	if(ptr) return (JRB)jval_v(ptr->val);
 	else return NULL;	
 }
-int gra_indegree_str(JRB g,char* u){// tính bậc vào của một đỉnh
-	int count=0;
-	JRB ptr=NULL,subptr=NULL,subtree=NULL;
+JRB gra_backgetadjacents_str(JRB g,char* u){// trả về danh sách các đỉnh mà có thể đến được u
+	return gra_backgetadjacents_gen(g,new_jval_s(u),jval_copy_s,jval_cmp_s);	
+}
+JRB gra_backgetadjacents_int(JRB g,int u){// trả về danh sách các đỉnh mà có thể đến được u
+	return gra_backgetadjacents_gen(g,new_jval_i(u),jval_copy_i,jval_cmp_i);	
+}
+JRB gra_backgetadjacents_dbl(JRB g,double u){// trả về danh sách các đỉnh mà có thể đến được u
+	return gra_backgetadjacents_gen(g,new_jval_d(u),jval_copy_d,jval_cmp_d);	
+}
+JRB gra_backgetadjacents_gen(JRB g,Jval u,void (*jval_copy)(Jval*,Jval*),int (*func)(Jval,Jval)){// trả về danh sách các đỉnh mà có thể đến được u
+	JRB new_tree=make_jrb(),subtree,ptr;	
 	jrb_traverse(ptr,g){
-		subtree=(JRB)jval_v(ptr->val);
-		jrb_traverse(subptr,subtree){
-			if(strcmp(jval_s(subptr->key),u) == 0) {count++;break;}
-		}
+		subtree=jval_v(ptr->val);
+		if(jrb_find_gen(subtree,u,func))
+			jrb_insert_gen(new_tree,ptr->key,JNULL,func);
 	}
-	return count;
+	return new_tree;	
+}
+int gra_indegree_str(JRB g,char* u){// tính bậc vào của một đỉnh
+	return gra_indegree_gen(g,new_jval_s(u),jval_cmp_s);
 }
 int gra_indegree_int(JRB g,int u){// tính bậc vào của một đỉnh
-	int count=0;
-	JRB ptr=NULL,subptr=NULL,subtree=NULL;
-	jrb_traverse(ptr,g){
-		subtree=(JRB)jval_v(ptr->val);
-		jrb_traverse(subptr,subtree){
-			if(jval_i(subptr->key) == u) {count++;break;}
-		}
-	}
-	return count;
+	return gra_indegree_gen(g,new_jval_i(u),jval_cmp_i);
 }
 int gra_indegree_dbl(JRB g,double u){// tính bậc vào của một đỉnh
-	int count=0;
-	JRB ptr=NULL,subptr=NULL,subtree=NULL;
-	jrb_traverse(ptr,g){
-		subtree=(JRB)jval_v(ptr->val);
-		jrb_traverse(subptr,subtree){
-			if(jval_d(subptr->key) == u) {count++;break;}
-		}
-	}
-	return count;
+	return gra_indegree_gen(g,new_jval_d(u),jval_cmp_d);
 }
 int gra_indegree_gen(JRB g,Jval u,int (*func)(Jval,Jval)){// tính bậc vào của một đỉnh
 	int count=0;
@@ -443,6 +437,24 @@ void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*func)(Jval, Jval)){
 			jrb_insert_gen(g,v,new_jval_v(sub_tree),func);
 			jrb_insert_gen(sub_tree,u,new_jval_d(weight),func);
 		}	
+}
+double gra_getweight(JRB g,Jval u,Jval v,int (*cmp)(Jval,Jval)){
+	JRB ptr,subptr,subtree,node_u,node_v;
+	int fnd=0;
+	node_u=jrb_find_gen(g,u,cmp);
+	if(node_u){
+		subtree=jval_v(node_u->val);
+		node_v=jrb_find_gen(subtree,v,cmp);
+		if(node_v){
+			return jval_d(node_v->val);
+		}
+		else{
+			return -1;
+		}
+	}
+	else{
+		return -1;
+	}	
 }
 JRB gra_getelement(JRB g,int index){
 	JRB ptr;

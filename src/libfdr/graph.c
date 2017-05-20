@@ -37,19 +37,37 @@ int Connected(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){
 	return gra_connected_gen(g,u,v,cmpk);
 }
 //trả về trọng số cạnh u->v
-Jval GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){}
+double GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){
+	return gra_getweight(g,u,v,cmpk);
+}
 //lấy danh sách đỉnh kề với đỉnh u
 // Adjacent(u)={v| có đường đi từ u->v}
-Dllist GetAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){}
+Dllist GetAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
+	JRB tmp_g=gra_getadjacents_gen(g,u,cmpk);
+	Dllist list=gra_to_dll(tmp_g,jval_copy_i);
+	//gra_free(tmp_g);
+	return list;
+}
 //lấy danh sách đỉnh kề với đỉnh u theo chiều ngược
 // BackAdjacent(u)={v| có đường đi từ v->u}
-Dllist GetBackAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){}
+Dllist GetBackAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
+	JRB tmp_g=gra_backgetadjacents_gen(g,u,jval_copy_i,cmpk);
+	//JRB tmp_g=gra_backgetadjacents_int(g,jval_i(u));
+	Dllist list=gra_to_dll(tmp_g,jval_copy_i);
+	gra_free(tmp_g);
+	return list;
+}
 //lấy bậc vào của đỉnh u
 // Indegree(u)=| BackAdjacent(u) |
-int GetIndegree(JRB g,Jval u,int (*cmpk)(Jval,Jval)){}
+int GetIndegree(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
+	return gra_indegree_gen(g,u,cmpk);
+	//return gra_indegree_int(g,jval_i(u));
+}
 //lấy bậc ra của dỉnh u
 // OutDegree(u)=| Adjacent(u) |
-int GetOutDegree(JRB g,Jval u,int (*cmpk)(Jval,Jval)){}
+int GetOutDegree(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
+	return gra_outdegree_gen(g,u,cmpk);
+}
 //tạo bản sao của đồ thị g
 JRB CloneGraph(JRB g, Jval (*copykey)(Jval)){} 
 //xóa đỉnh khỏi đồ thị g
@@ -65,18 +83,3 @@ Dllist TopoOrder(JRB g,int (*cmpk)(Jval,Jval)){}
 // trả về danh sách rỗng nếu không tồn tại đường đi từ u đến v
 Dllist PathDFS(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){}
 Dllist PathDj(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval),double* out_length){}
-// int main(int argc, char const *argv[])
-// {
-// 	JRB tree,subtree,ptr,subptr,t,st;
-// 	tree=Load("input11.txt");
-// 	jrb_traverse(ptr,tree){
-// 		printf("%d: ",jval_i(ptr->key));
-// 		subtree=(JRB)jval_v(ptr->val);
-// 		jrb_traverse(subptr,subtree){
-// 			printf("%d(%d) ",jval_i(subptr->key),jval_i(subptr->val));
-// 		}
-// 		printf("\n");
-// 	}	
-	
-// 	return 0;
-// }

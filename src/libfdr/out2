@@ -13,3 +13,33 @@ test dll_sort
 test dll_getelement
 5 4 3 2 1 
 1 1000 3 4 5 
+test gra_connected
+01101
+10010
+10011
+01100
+10100
+test gra_getweight
+-1 5 8 -1 6 
+5 -1 -1 5 -1 
+8 -1 -1 9 2 
+-1 5 9 -1 -1 
+6 -1 2 -1 -1 
+test gra_getadjacents
+1: 2 3 5 
+2: 1 4 
+3: 1 4 5 
+4: 2 3 
+5: 1 3 
+test gra_backgetadjacents
+1: 2 3 5 
+2: 1 4 
+3: 1 4 5 
+4: 2 3 
+5: 1 3 
+test gra_inoutdegree
+1: in(3) out(3)
+2: in(2) out(2)
+3: in(3) out(3)
+4: in(2) out(2)
+5: in(2) out(2)
