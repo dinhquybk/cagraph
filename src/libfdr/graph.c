@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "fields.h"
 #include "graph.h"
+
 JRB Load(const char* filename){
 	JRB g=make_jrb();
 	IS is;
@@ -20,32 +21,21 @@ JRB Load(const char* filename){
 	return g;
 }
 //giải phóng bộ nhớ đã cấp phát cho đồ thị g tương thích với hàm load, thường đi cặp với hàm Load
-void jval_free_s(Jval j){// ham nay free vung nho ma jval tro toi neu co
-	if(j.s!=NULL)free(j.s);
-}
-void jval_free_v(Jval j){// ham nay free vung nho ma jval tro toi neu co
-	if(j.v!=NULL)free(j.v);
-}
 void FreeGraph(JRB g){
-	JRB ptr,subptr,subtree;
-	jrb_traverse(ptr,g){
-		/*cần làm : free vùng nhớ mà key trỏ tới nếu có */
-		subtree=jval_v(ptr->val);
-		if(subtree!=NULL){
-			jrb_traverse(subptr,subtree){
-				/*cần làm : free vùng nhớ mà key trỏ tới nếu có */
-				/*cần làm : free vùng nhớ mà val trỏ tới nếu có */				
-			}
-			jrb_free_tree(subtree);
-		}			
-	}
-	jrb_free_tree(g);
+	gra_free(g);
 }
 //trả về danh sách đỉnh của g
-Dllist GetVertices(JRB g){}
-JRB GetVerticesJrb(JRB g){}
+Dllist GetVertices(JRB g){
+	JRB tree=gra_getvertices(g,jval_copy_i,jval_cmp_i);
+	Dllist list=gra_to_dll(tree,jval_copy_i);
+	gra_free(tree);	
+	return list;
+}
+
 //kiểm tra nếu có cạnh từ u->v
-int Connected(Jval u,Jval v,int (*cmpk)(Jval,Jval)){}
+int Connected(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){
+	return gra_connected_gen(g,u,v,cmpk);
+}
 //trả về trọng số cạnh u->v
 Jval GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){}
 //lấy danh sách đỉnh kề với đỉnh u

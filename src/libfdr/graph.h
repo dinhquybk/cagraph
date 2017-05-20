@@ -2,6 +2,7 @@
 #define GRAPH_H_
 #include "jrb.h"
 #include "dllist.h"
+#include "hero.h"
 // * Kiểu dữ liệu lưu trọng số cạnh bắt buộc phải là double
 //thêm cạnh vào đồ thị
 // nếu u,v mà chứa con trỏ thì chỉ copy con trỏ, không copy vùng nhớ tương ứng.
@@ -14,7 +15,7 @@ void FreeGraph(JRB g);
 Dllist GetVertices(JRB g);
 JRB GetVerticesJrb(JRB g);
 //kiểm tra nếu có cạnh từ u->v
-int Connected(Jval u,Jval v,int (*cmpk)(Jval,Jval));
+int Connected(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval));
 //trả về trọng số cạnh u->v
 Jval GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval));
 //lấy danh sách đỉnh kề với đỉnh u

@@ -17,21 +17,108 @@ int jval_compare_f(const Jval* x,const Jval* y){
 	else if(tmp==0) return 0;
 		else return 1;
 }
+int jval_compare_d(const Jval* x,const Jval* y){
+	double tmp=x->d - y->d;
+	if(tmp<0 ) return -1;
+	else if(tmp==0) return 0;
+		else return 1;
+}
 int jval_compare_s(const Jval* x,const Jval* y){
 	return strcmp(x->s,y->s);
+}
+int jval_cmp_i(Jval x,Jval y){
+	int tmp=x.i-y.i;
+	if(tmp<0 ) return -1;
+	else if(tmp==0) return 0;
+		else return 1;
+}
+int jval_cmp_f(Jval x,Jval y){
+	float tmp=x.f-y.f;
+	if(tmp<0 ) return -1;
+	else if(tmp==0) return 0;
+		else return 1;
+}
+int jval_cmp_d(Jval x,Jval y){
+	double tmp=x.d-y.d;
+	if(tmp<0 ) return -1;
+	else if(tmp==0) return 0;
+		else return 1;
+}
+int jval_cmp_s(Jval x,Jval y){
+	int tmp=strcmp(x.s,y.s);
+	if(tmp<0 ) return -1;
+	else if(tmp==0) return 0;
+		else return 1;
+}
+void jval_copy_i(Jval *des,Jval *src){
+	des->i=src->i;
+}
+void jval_copy_f(Jval *des,Jval *src){
+	des->f=src->f;
+}
+void jval_copy_d(Jval *des,Jval *src){
+	des->d=src->d;
+}
+void jval_copy_s(Jval *des,Jval *src){
+	des->s=strdup(src->s);
 }
 //----------------------------------------------
 /*
 DLLIST
 */
-Dllist dll_search(const Dllist list,
-				const Jval* item, 
-				int (*compare)(const Jval*,const Jval*)){
+Dllist dll_find_str(Dllist root,char* key){
 	Dllist ptr;
-	dll_traverse(ptr,list){
-		if(compare(&(ptr->val),item)==0) return ptr;
+	dll_traverse(ptr,root){
+		if(strcmp(jval_s(ptr->val),key)==0) return ptr;
 	}
 	return NULL;
+}
+Dllist dll_find_int(Dllist root,int key){
+	Dllist ptr;
+	dll_traverse(ptr,root){
+		if(jval_i(ptr->val)==key) return ptr;
+	}
+	return NULL;
+}
+Dllist dll_find_dbl(Dllist root,double key){
+	Dllist ptr;
+	dll_traverse(ptr,root){
+		if(jval_d(ptr->val)==key) return ptr;
+	}
+	return NULL;
+}
+Dllist dll_find_gen(Dllist root,Jval key,int (*func)(Jval, Jval)){
+	Dllist ptr;
+	dll_traverse(ptr,root){
+		if(func(ptr->val,key)==0) return ptr;
+	}
+	return NULL;
+}
+Dllist dll_getelement(Dllist l,int index){
+	Dllist ptr;
+	int i=0;
+	if(l){
+		dll_traverse(ptr,l){
+			if(i==index) return ptr;
+			else i++;
+		}		
+	}
+	return NULL;
+}
+void dll_free(Dllist l){
+	Dllist ptr;
+	jrb_traverse(ptr,l){
+		/*cần làm : free vùng nhớ mà ptr->val trỏ tới nếu có */		
+	}
+	free_dllist(l);
+}
+int dll_size(Dllist l){
+	int count=0;
+	Dllist ptr;
+	dll_traverse(ptr,l){
+		count++;
+	}
+	return count;
 }
 Dllist dll_dup(Dllist l,void (*jval_copy)(Jval*,Jval*)){
 	Dllist new_list=new_dllist(),ptr;
@@ -58,7 +145,7 @@ Dllist dll_sort(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval,Jval)){
 		dll_traverse(ptr,l){			
 			node=NULL;
 			dll_traverse(new_ptr,new_list){										
-				if(cmp(ptr->val,new_ptr->val)<=0)
+				if(cmp(ptr->val,new_ptr->val)>=0)
 					continue;
 				else {
 					node=new_ptr;
@@ -70,6 +157,16 @@ Dllist dll_sort(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval,Jval)){
 		}
 	}
 	return new_list;
+}
+//show danh sach list:
+void dll_display(Dllist l,void (*show)(Dllist)){
+	Dllist ptr;	
+	if(l){
+		dll_traverse(ptr,l){			
+			show(ptr);
+		}		
+	}
+	else printf("NULL\n");
 }
 //chuyển từ dllist sang g:
 JRB dll_to_gra(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*func)(Jval, Jval)){
@@ -347,6 +444,50 @@ void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*func)(Jval, Jval)){
 			jrb_insert_gen(sub_tree,u,new_jval_d(weight),func);
 		}	
 }
+JRB gra_getelement(JRB g,int index){
+	JRB ptr;
+	int i=0;
+	if(g){
+		jrb_traverse(ptr,g){
+			if(i==index) return ptr;
+			else i++;
+		}		
+	}
+	return NULL;
+}
+JRB gra_getvertices(JRB g,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval,Jval)){
+	JRB new_tree=make_jrb();
+	JRB g_ptr,sub_g_ptr,sub_tree;	
+	if(new_tree){
+		jrb_traverse(g_ptr,g){
+			if(!jrb_find_gen(new_tree,g_ptr->key,cmp))
+				jrb_insert_gen(new_tree,jval_dup(g_ptr->key,jval_copy),JNULL,cmp);
+			sub_tree=jval_v(g_ptr->val);
+			jrb_traverse(sub_g_ptr,sub_tree){
+				if(!jrb_find_gen(new_tree,sub_g_ptr->key,cmp))
+					jrb_insert_gen(new_tree,jval_dup(sub_g_ptr->key,jval_copy),JNULL,cmp);
+			}
+		}		
+	}	
+	return new_tree;
+}
+int gra_size(JRB g){
+	int count=0;
+	JRB ptr;
+	jrb_traverse(ptr,g){
+		count++;
+	}
+	return count;
+}
+//show do thi g:
+void gra_display(JRB g,void (*show)(JRB)){
+	JRB ptr;
+	if(g){
+		jrb_traverse(ptr,g){
+			show(ptr);
+		}
+	}
+}
 //XÓA đồ thị g:
 void gra_free(JRB g){
 	JRB ptr,subptr,subtree;
@@ -406,3 +547,35 @@ spliter* str_split(char* string,char* chars){
 	return sp;
 }
 //--------------------------------------
+filecompare filecmp(char* fname1,char* fname2){
+	FILE *f1=fopen(fname1,"r");
+	FILE *f2=fopen(fname2,"r");
+	char c1,c2;
+	filecompare result;
+	result.line=1;
+	result.col=1;
+	result.same=0;
+	if(f1 && f2){
+		do{
+			c1=fgetc(f1);
+			c2=fgetc(f2);
+			if(c1!=c2) {
+				result.same= 1;
+				return result;
+			}
+			else{
+				result.col++;
+			}
+			if(c1=='\n') {
+				result.line++;
+				result.col=1;
+			}		
+		}while(!feof(f1)||!feof(f2));
+		result.same= 0;
+		return result;
+	}
+	else{
+		result.same= -1;
+		return result;
+	}	
+}

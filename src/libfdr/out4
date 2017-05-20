@@ -1,0 +1,16 @@
+test load
+2: 4(5) 11(5) 
+3: 4(19) 5(2) 11(8) 
+4: 2(5) 3(19) 
+5: 3(2) 11(6) 
+6: 11(16) 
+11: 2(5) 3(8) 5(6) 6(16) 
+test gra_getvertices
+6: 2 3 4 5 6 11 
+test dll_reverse
+11 6 5 4 3 2 
+test dll_sort
+2 3 4 5 6 11 
+test dll_getelement
+11 6 5 4 3 2 
+2 3 4 1000 6 11 
