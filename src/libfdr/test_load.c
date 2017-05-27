@@ -112,6 +112,17 @@ int main(int argc, char const *argv[])
 				fprintf(f,"%d(%0.0f) ",jval_i(subptr->key),jval_d(subptr->val));
 			}
 			fprintf(f,"\n");
+		}		
+		// test gra_delete_gen:
+		fprintf(f, "test gra_delete_gen\n" );		
+		DeleteNode(new_g,new_jval_i(i+1),jval_cmp_i,jval_dup_i);
+		jrb_traverse(ptr,new_g){
+			fprintf(f,"%d: ",jval_i(ptr->key));
+			subtree=(JRB)jval_v(ptr->val);
+			jrb_traverse(subptr,subtree){
+				fprintf(f,"%d(%0.0f) ",jval_i(subptr->key),jval_d(subptr->val));
+			}
+			fprintf(f,"\n");
 		}
 		FreeGraph(new_g);
 		fclose(f);

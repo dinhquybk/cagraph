@@ -342,7 +342,31 @@ void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*cmp)(Jval, Jval)){
 			jrb_insert_gen(sub_tree,u,new_jval_d(weight),cmp);
 		}	
 }
-
+void gra_delete_str(JRB g,char* u){
+	gra_delete_gen(g,new_jval_s(u),jval_cmp_s);
+}
+void gra_delete_int(JRB g,int u){
+	gra_delete_gen(g,new_jval_i(u),jval_cmp_i);
+}
+void gra_delete_dbl(JRB g,double u){
+	gra_delete_gen(g,new_jval_d(u),jval_cmp_d);
+}
+void gra_delete_gen(JRB g,Jval u,int (*cmpkey)(Jval,Jval)){
+	JRB ptr,subptr,subtree;
+	if(g){
+		ptr=jrb_find_gen(g,u,cmpkey);
+		if(ptr){
+			subtree=(JRB)jval_v(ptr->val);
+			jrb_free_tree(subtree);
+			jrb_delete_node(ptr);
+		}
+		jrb_traverse(ptr,g){
+			subtree=(JRB)jval_v(ptr->val);
+			subptr=jrb_find_gen(subtree,u,cmpkey);
+			if(subptr) jrb_delete_node(subptr);
+		}
+	}	
+}
 // lấy trọng số một cạnh từ u đến v
 double gra_getweight(JRB g,Jval u,Jval v,int (*cmp)(Jval,Jval)){
 	JRB ptr,subptr,subtree,node_u,node_v;

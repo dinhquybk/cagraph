@@ -72,7 +72,11 @@ JRB CloneGraph(JRB g, Jval (*copykey)(Jval)){
 	return gra_dup(g,jval_cmp_i,jval_cmp_i,jval_copy_i,jval_copy_i,jval_copy_d);	
 } 
 //xóa đỉnh khỏi đồ thị g
-JRB DeleteNode(JRB g,Jval u,int (*cmpk)(Jval,Jval),Jval (*ck)(Jval)){}
+JRB DeleteNode(JRB g,Jval u,int (*cmpk)(Jval,Jval),Jval (*ck)(Jval)){
+	JRB x=NULL;
+	gra_delete_gen(g,u,cmpk);
+	return x;
+}
 //kiểm tra đồ thị có hướng không chu trình
 // trả về 1 nếu không có chu trình
 // trả về 0 nếu có chu trình

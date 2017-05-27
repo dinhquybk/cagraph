@@ -80,11 +80,16 @@ int gra_outdegree_str(JRB g,char* u);
 int gra_outdegree_int(JRB g,int u);
 int gra_outdegree_dbl(JRB g,double u);
 int gra_outdegree_gen(JRB g,Jval u,int (*cmp)(Jval,Jval));
-// thêm cạnh u<->v trọng weight vào đồ thị g:
+// thêm cạnh u<->v trọng weight vào đồ thị g
 void gra_insert_str(JRB g,char* u,char* v,double weight);
 void gra_insert_int(JRB g,int u,int v,double weight);
 void gra_insert_dbl(JRB g,double u,double v,double weight);
 void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*cmp)(Jval, Jval));
+// xóa một đỉnh u của đồ thị g
+void gra_delete_str(JRB g,char* u);
+void gra_delete_int(JRB g,int u);
+void gra_delete_dbl(JRB g,double u);
+void gra_delete_gen(JRB g,Jval u,int (*cmpkey)(Jval,Jval));
 // lấy trọng số của cạnh từ u đến v
 double gra_getweight(JRB g,Jval u,Jval v,int (*cmp)(Jval,Jval));
 // lấy phần tử thứ index trong đồ thị
