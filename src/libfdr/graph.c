@@ -26,7 +26,7 @@ void FreeGraph(JRB g){
 }
 //trả về danh sách đỉnh của g
 Dllist GetVertices(JRB g){
-	JRB tree=gra_getvertices(g,jval_copy_i,jval_cmp_i);
+	JRB tree=gra_getvertices(g,jval_cmp_i,jval_copy_i);
 	Dllist list=gra_to_dll(tree,jval_copy_i);
 	gra_free(tree);	
 	return list;
@@ -43,16 +43,15 @@ double GetWeight(JRB g,Jval u,Jval v,int (*cmpk)(Jval,Jval)){
 //lấy danh sách đỉnh kề với đỉnh u
 // Adjacent(u)={v| có đường đi từ u->v}
 Dllist GetAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
-	JRB tmp_g=gra_getadjacents_gen(g,u,cmpk);
+	JRB tmp_g=gra_getadjacents_gen(g,u,cmpk,jval_copy_i);
 	Dllist list=gra_to_dll(tmp_g,jval_copy_i);
-	//gra_free(tmp_g);
+	gra_free(tmp_g);
 	return list;
 }
 //lấy danh sách đỉnh kề với đỉnh u theo chiều ngược
 // BackAdjacent(u)={v| có đường đi từ v->u}
 Dllist GetBackAdjacents(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
-	JRB tmp_g=gra_backgetadjacents_gen(g,u,jval_copy_i,cmpk);
-	//JRB tmp_g=gra_backgetadjacents_int(g,jval_i(u));
+	JRB tmp_g=gra_backgetadjacents_gen(g,u,cmpk,jval_copy_i);	
 	Dllist list=gra_to_dll(tmp_g,jval_copy_i);
 	gra_free(tmp_g);
 	return list;
@@ -69,7 +68,9 @@ int GetOutDegree(JRB g,Jval u,int (*cmpk)(Jval,Jval)){
 	return gra_outdegree_gen(g,u,cmpk);
 }
 //tạo bản sao của đồ thị g
-JRB CloneGraph(JRB g, Jval (*copykey)(Jval)){} 
+JRB CloneGraph(JRB g, Jval (*copykey)(Jval)){
+	return gra_dup(g,jval_cmp_i,jval_cmp_i,jval_copy_i,jval_copy_i,jval_copy_d);	
+} 
 //xóa đỉnh khỏi đồ thị g
 JRB DeleteNode(JRB g,Jval u,int (*cmpk)(Jval,Jval),Jval (*ck)(Jval)){}
 //kiểm tra đồ thị có hướng không chu trình

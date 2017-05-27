@@ -14,6 +14,9 @@ typedef struct spliter_t{
 JVAL
 */
 Jval jval_dup(Jval j,void (*jval_copy)(Jval*,Jval*));
+Jval jval_dup_i(Jval j);
+Jval jval_dup_d(Jval j);
+Jval jval_dup_s(Jval j);
 int jval_compare_i(const Jval* x,const Jval* y);
 int jval_compare_f(const Jval* x,const Jval* y);
 int jval_compare_d(const Jval* x,const Jval* y);
@@ -33,7 +36,7 @@ DLLIST
 Dllist dll_find_str(Dllist root,char* key);
 Dllist dll_find_int(Dllist root,int key);
 Dllist dll_find_dbl(Dllist root,double key);
-Dllist dll_find_gen(Dllist root,Jval key,int (*func)(Jval, Jval));
+Dllist dll_find_gen(Dllist root,Jval key,int (*cmp)(Jval, Jval));
 Dllist dll_getelement(Dllist l,int index);
 void dll_free(Dllist l);
 int dll_size(Dllist l);
@@ -43,8 +46,14 @@ Dllist dll_reverse(Dllist l,void (*jval_copy)(Jval*,Jval*));
 Dllist dll_sort(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval,Jval));
 //show danh sach list:
 void dll_display(Dllist l,void (*show)(Dllist));
-//chuyển từ dllist sang g:
-JRB dll_to_gra(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*func)(Jval, Jval));
+//chuyển từ dllist sang gra:
+JRB dll_to_gra(Dllist l,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval, Jval));
+//--------------------------------------------------
+/*
+GRAPH
+*/
+//  nhân bản một cây jrb
+JRB jrb_dup(JRB tree,int (*cmp)(Jval,Jval),void (*jval_copy_key)(Jval*,Jval*),void (*jval_copy_val)(Jval*,Jval*));
 //--------------------------------------------------
 /*
 GRAPH
@@ -52,43 +61,57 @@ GRAPH
 int gra_connected_str(JRB g,char* u,char* v);
 int gra_connected_int(JRB g,int u,int v);
 int gra_connected_dbl(JRB g,double u,double v);
-int gra_connected_gen(JRB g,Jval u,Jval v,int (*func)(Jval,Jval));
+int gra_connected_gen(JRB g,Jval u,Jval v,int (*cmp)(Jval,Jval));
 JRB gra_getadjacents_str(JRB g,char* u);
 JRB gra_getadjacents_int(JRB g,int u);
 JRB gra_getadjacents_dbl(JRB g,double u);
-JRB gra_getadjacents_gen(JRB g,Jval u,int (*func)(Jval,Jval));
+JRB gra_getadjacents_gen(JRB g,Jval u,int (*cmp)(Jval,Jval),void (*jval_copy)(Jval*,Jval*));
 JRB gra_backgetadjacents_str(JRB g,char* u);
 JRB gra_backgetadjacents_int(JRB g,int u);
 JRB gra_backgetadjacents_dbl(JRB g,double u);
-JRB gra_backgetadjacents_gen(JRB g,Jval u,void (*jval_copy)(Jval*,Jval*),int (*func)(Jval,Jval));
+JRB gra_backgetadjacents_gen(JRB g,Jval u,int (*cmp)(Jval,Jval),void (*jval_copy)(Jval*,Jval*));
+// tính bậc vào của đỉnh
 int gra_indegree_str(JRB g,char* u);
 int gra_indegree_int(JRB g,int u);
 int gra_indegree_dbl(JRB g,double u);
-int gra_indegree_gen(JRB g,Jval u,int (*func)(Jval,Jval));
+int gra_indegree_gen(JRB g,Jval u,int (*cmp)(Jval,Jval));
+// tính bậc ra của đỉnh
 int gra_outdegree_str(JRB g,char* u);
 int gra_outdegree_int(JRB g,int u);
 int gra_outdegree_dbl(JRB g,double u);
-int gra_outdegree_gen(JRB g,Jval u,int (*func)(Jval,Jval));
-//THÊM cạnh u<->v trọng số cost  vào đồ thị g:
+int gra_outdegree_gen(JRB g,Jval u,int (*cmp)(Jval,Jval));
+// thêm cạnh u<->v trọng weight vào đồ thị g:
 void gra_insert_str(JRB g,char* u,char* v,double weight);
 void gra_insert_int(JRB g,int u,int v,double weight);
 void gra_insert_dbl(JRB g,double u,double v,double weight);
-void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*func)(Jval, Jval));
+void gra_insert_gen(JRB g,Jval u,Jval v,double weight,int (*cmp)(Jval, Jval));
+// lấy trọng số của cạnh từ u đến v
 double gra_getweight(JRB g,Jval u,Jval v,int (*cmp)(Jval,Jval));
+// lấy phần tử thứ index trong đồ thị
 JRB gra_getelement(JRB g,int index);
-JRB gra_getvertices(JRB g,void (*jval_copy)(Jval*,Jval*),int (*cmp)(Jval,Jval));
+// lấy cây chứa đỉnh của g
+JRB gra_getvertices(JRB g,int (*cmp)(Jval,Jval),void (*jval_copy)(Jval*,Jval*));
+// tính số đỉnh trong g
 int gra_size(JRB g);
-//show do thi g:
+// hiển thị đồ thị g
 void gra_display(JRB g,void (*show)(JRB));
-//XÓA đồ thị g:
+// nhân bản dồ thị g
+JRB gra_dup(JRB g,int (*cmpkey)(Jval,Jval),
+	int (*cmpsubkey)(Jval,Jval),
+	void (*jval_copy_key)(Jval*,Jval*),
+	void (*jval_copy_subkey)(Jval*,Jval*),
+	void (*jval_copy_subval)(Jval*,Jval*)
+	);
+// xóa đồ thị g:
 void gra_free(JRB g);
-//chuyển từ g sang dllist:
+// chuyển từ g sang dllist:
 Dllist gra_to_dll(JRB g,void (*jval_copy)(Jval*,Jval*));
 /*
 STRING
 */
 int str_include(char *s,char c);
 spliter* str_split(char* string,char* chars);
+void spliter_free(spliter *sp);
 //--------------------------------------
 typedef struct fcmp_t{
 	int line;

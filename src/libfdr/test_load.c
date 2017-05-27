@@ -102,7 +102,18 @@ int main(int argc, char const *argv[])
 			fprintf(f, "%d: in(%d) out(%d)\n",
 				jval_i(ptr->key),GetIndegree(g,ptr->key,jval_cmp_i),GetOutDegree(g,ptr->key,jval_cmp_i) );			
 		}
-		
+		// test gra_dup:
+		fprintf(f, "test gra_dup\n" );		
+		JRB new_g=CloneGraph(g,jval_dup_i);
+		jrb_traverse(ptr,new_g){
+			fprintf(f,"%d: ",jval_i(ptr->key));
+			subtree=(JRB)jval_v(ptr->val);
+			jrb_traverse(subptr,subtree){
+				fprintf(f,"%d(%0.0f) ",jval_i(subptr->key),jval_d(subptr->val));
+			}
+			fprintf(f,"\n");
+		}
+		FreeGraph(new_g);
 		fclose(f);
 
 		printf("Test case : %d\n",i+1 );
@@ -117,7 +128,7 @@ int main(int argc, char const *argv[])
 			default:
 				printf("Load FAILED at line %d, column: %d\n",tmp.line,tmp.col );
 				break;
-		}
+		}		
 		FreeGraph(g);		
 	}	
 

@@ -50,5 +50,6 @@ clean:
 .SUFFIXES: .c .o
 .c.o:
 	$(CC) $(CFLAGS) -c $*.c
-test:
+test: test_load.c graph.c hero.c
+	rm -f test
 	gcc -o test test_load.c graph.c hero.c libfdr.a 
